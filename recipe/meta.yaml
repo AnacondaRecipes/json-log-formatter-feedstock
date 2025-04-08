@@ -19,6 +19,8 @@ build:
   number: 0
 
 requirements:
+  build:
+    - git  # [unix]
   host:
     - python
     - setuptools
@@ -37,7 +39,9 @@ test:
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - cd gh_src
     # Missing django for python 3.13
-    - pytest -vv tests.py  # [py<313]
+    - pytest -vv tests.py  # [py<313 and (not win)]
+    # Path syntax difference for windows (/ vs \\)
+    - pytest -vv tests.py -k "not test_path_name_is_test"  # [py<313 and win]
   requires:
     - pip
     - pytest
