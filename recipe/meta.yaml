@@ -1,0 +1,51 @@
+{% set name = "json-log-formatter" %}
+{% set version = "1.1" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/json_log_formatter-{{ version }}.tar.gz
+  sha256: fe8fd801c58c1234df86211720921f60149105ef8d1e2a72966bb61da9bed584
+
+build:
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+
+test:
+  imports:
+    - json_log_formatter
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+  requires:
+    - pip
+
+about:
+  home: https://github.com/marselester/json-log-formatter
+  dev_url: https://github.com/marselester/json-log-formatter
+  doc_url: https://github.com/marselester/json-log-formatter/blob/master/README.rst
+  summary: JSON log formatter
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  description: |
+    The JSON-log-formatter Python package enables logging in JSON format,
+    facilitating integration with systems like Logstash. It provides customizable 
+    formatters to include additional log record attributes and supports integration 
+    with Django's logging settings.
+
+extra:
+  recipe-maintainers:
+    - Cansisti
