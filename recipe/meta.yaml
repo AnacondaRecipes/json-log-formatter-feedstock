@@ -1,13 +1,17 @@
 {% set name = "json-log-formatter" %}
 {% set version = "1.1" %}
+{% set gh_version = "1.1.0" %}
 
 package:
   name: {{ name|lower }}
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/json_log_formatter-{{ version }}.tar.gz
-  sha256: fe8fd801c58c1234df86211720921f60149105ef8d1e2a72966bb61da9bed584
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/json_log_formatter-{{ version }}.tar.gz
+    sha256: fe8fd801c58c1234df86211720921f60149105ef8d1e2a72966bb61da9bed584
+  - folder: gh_src
+    git_url: https://github.com/marselester/json-log-formatter.git
+    git_rev: v{{ gh_version }}
 
 build:
   skip: True  # [py<36]
@@ -24,13 +28,21 @@ requirements:
     - python
 
 test:
+  source_files:
+    - gh_src/tests.py
   imports:
     - json_log_formatter
   commands:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - cd gh_src
+    - pytest -vv tests.py
   requires:
     - pip
+    - pytest
+    - ujson
+    - simplejson
+    - django
 
 about:
   home: https://github.com/marselester/json-log-formatter
