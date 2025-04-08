@@ -36,13 +36,14 @@ test:
     - pip check
     - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
     - cd gh_src
-    - pytest -vv tests.py
+    # Missing django for python 3.13
+    - pytest -vv tests.py  # [py<313]
   requires:
     - pip
     - pytest
     - ujson
     - simplejson
-    - django
+    - django  # [py<313]
 
 about:
   home: https://github.com/marselester/json-log-formatter
