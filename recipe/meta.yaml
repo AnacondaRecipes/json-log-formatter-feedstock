@@ -1,0 +1,68 @@
+{% set name = "json-log-formatter" %}
+{% set version = "1.1" %}
+{% set gh_version = "1.1.0" %}
+
+package:
+  name: {{ name|lower }}
+  version: {{ version }}
+
+source:
+  - url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/json_log_formatter-{{ version }}.tar.gz
+    sha256: fe8fd801c58c1234df86211720921f60149105ef8d1e2a72966bb61da9bed584
+  - folder: gh_src
+    git_url: https://github.com/marselester/json-log-formatter.git
+    git_rev: v{{ gh_version }}
+
+build:
+  skip: True  # [py<36]
+  script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
+  number: 0
+
+requirements:
+  build:
+    - git  # [unix]
+  host:
+    - python
+    - setuptools
+    - wheel
+    - pip
+  run:
+    - python
+
+test:
+  source_files:
+    - gh_src/tests.py
+  imports:
+    - json_log_formatter
+  commands:
+    - pip check
+    - python -c "from importlib.metadata import version; assert(version('{{ name }}')=='{{ version }}')"
+    - cd gh_src
+    # Missing django for python 3.13
+    - pytest -vv tests.py  # [py<313 and (not win)]
+    # Path syntax difference for windows (/ vs \\)
+    - pytest -vv tests.py -k "not test_path_name_is_test"  # [py<313 and win]
+  requires:
+    - pip
+    - pytest
+    - ujson
+    - simplejson
+    - django  # [py<313]
+
+about:
+  home: https://github.com/marselester/json-log-formatter
+  dev_url: https://github.com/marselester/json-log-formatter
+  doc_url: https://github.com/marselester/json-log-formatter/blob/master/README.rst
+  summary: JSON log formatter
+  license: MIT
+  license_family: MIT
+  license_file: LICENSE
+  description: |
+    The JSON-log-formatter Python package enables logging in JSON format,
+    facilitating integration with systems like Logstash. It provides customizable 
+    formatters to include additional log record attributes and supports integration 
+    with Django's logging settings.
+
+extra:
+  recipe-maintainers:
+    - Cansisti
