@@ -1,4 +1,5 @@
 anaconda_config_version: 1
 upstream_sources:
-  - pypi:
-      identifier: json-log-formatter
+  - git:
+      identifier: https://github.com/marselester/json-log-formatter.git
+      strip_prefix: v
